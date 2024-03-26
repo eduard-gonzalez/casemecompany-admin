@@ -1,5 +1,5 @@
+import moment from 'moment';
 import { descriptionSchema, discountSchema, dropDownScheme, ifTypeSimpleSchema, nameSchema, variationSchema, externalUrlSchema } from "../../Utils/Validation/ValidationSchemas";
-
 export const ProductValidationSchema = {
   name: nameSchema,
   short_description: nameSchema,
@@ -31,6 +31,11 @@ export function ProductInitValues(oldData, updateId) {
     });
     return variants?.filter((elem) => elem !== false);
   };
+  const formatDate = (dateString) => {
+    const date = moment(dateString);
+    console.log(date.isValid() ? date.toDate() : new Date());
+    return date.isValid() ? date.toDate() : new Date();
+  };
   return {
     // General
     name: updateId ? oldData?.name || "" : "",
@@ -49,8 +54,8 @@ export function ProductInitValues(oldData, updateId) {
     sale_price: updateId ? oldData?.sale_price || "" : "0.00",
     discount: updateId ? oldData?.discount || "" : "",
     is_sale_enable: updateId ? oldData?.is_sale_enable || false : false,
-    sale_starts_at: updateId ? oldData?.sale_starts_at || new Date() : new Date(),
-    sale_expired_at: updateId ? oldData?.sale_expired_at || new Date() : new Date(),
+    sale_starts_at: updateId ? formatDate(oldData?.sale_starts_at) : new Date(),
+    sale_expired_at: updateId ? formatDate(oldData?.sale_expired_at) : new Date(),
     // Inventory  =>Type: Classified
     variations: updateId ? oldData?.variations : [],
     combination: updateId ? attr_combination() : [{}],
